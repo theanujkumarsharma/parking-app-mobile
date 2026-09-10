@@ -54,8 +54,11 @@ export default function OwnerLogin() {
             secureTextEntry
           />
 
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>Login</Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => router.replace("/owner/home")}
+          >
+          <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
 
           <View style={styles.signupRow}>
