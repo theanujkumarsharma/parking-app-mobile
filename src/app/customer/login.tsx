@@ -57,7 +57,10 @@ export default function CustomerLogin() {
               secureTextEntry
             />
 
-            <TouchableOpacity style={styles.loginButton}>
+            <TouchableOpacity
+              style={styles.loginButton}
+              onPress={() => router.push("/customer/home")}
+              >
               <Text style={styles.loginButtonText}>Login</Text>
             </TouchableOpacity>
 
