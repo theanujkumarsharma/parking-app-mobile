@@ -104,8 +104,10 @@ export default function CustomerHome() {
             Nearby Parking
           </Text>
 
-          <TouchableOpacity>
-            <Text style={styles.viewAll}>View all</Text>
+          <TouchableOpacity
+            onPress={() => router.push("/customer/all-parking")}
+          >
+          <Text style={styles.viewAll}>View all</Text>
           </TouchableOpacity>
         </View>
 
@@ -115,6 +117,16 @@ export default function CustomerHome() {
             key={parking.id}
             style={styles.parkingCard}
             activeOpacity={0.8}
+            onPress={() =>
+            router.push({
+            pathname: "/customer/parking-details",
+            params: {
+              id: parking.id.toString(),
+              name: parking.name,
+              price: parking.price.toString(),
+            },
+          })
+        }
           >
             <View style={styles.parkingIconContainer}>
               <Text style={styles.parkingIcon}>🅿️</Text>
