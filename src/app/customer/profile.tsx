@@ -12,14 +12,14 @@ import {
 import { useState } from "react";
 
 export default function CustomerProfile() {
-  const [editing, setEditing] = useState(false);
-
+  // const [editing, setEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState("Rahul Sharma");
   const [email, setEmail] = useState("rahul@example.com");
   const [phone, setPhone] = useState("+91 98765 43210");
 
   const handleSave = () => {
-    setEditing(false);
+    setIsEditing(false);
 
     Alert.alert(
       "Profile Updated",
@@ -62,15 +62,15 @@ export default function CustomerProfile() {
         <TouchableOpacity
           style={styles.editButton}
           onPress={() => {
-            if (editing) {
+            if (isEditing) {
               handleSave();
             } else {
-              setEditing(true);
+              setIsEditing(true);
             }
           }}
         >
           <Text style={styles.editText}>
-            {editing ? "Save" : "Edit"}
+            {isEditing ? "Save" : "Edit"}
           </Text>
         </TouchableOpacity>
       </View>
@@ -113,7 +113,7 @@ export default function CustomerProfile() {
           <View style={styles.field}>
             <Text style={styles.label}>Full Name</Text>
 
-            {editing ? (
+            {isEditing ? (
               <TextInput
                 style={styles.input}
                 value={name}
@@ -137,7 +137,7 @@ export default function CustomerProfile() {
           <View style={styles.field}>
             <Text style={styles.label}>Email Address</Text>
 
-            {editing ? (
+            {isEditing ? (
               <TextInput
                 style={styles.input}
                 value={email}
@@ -163,7 +163,7 @@ export default function CustomerProfile() {
           <View style={styles.field}>
             <Text style={styles.label}>Phone Number</Text>
 
-            {editing ? (
+            {isEditing ? (
               <TextInput
                 style={styles.input}
                 value={phone}
