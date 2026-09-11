@@ -25,7 +25,7 @@ export default function OwnerHome() {
       {/* Header */}
       <View style={styles.header}>
         <View>
-          <Text style={styles.title}>Owner Dashboard</Text>
+          <Text style={styles.title}>Hello, Owner</Text>
           <Text style={styles.subtitle}>
             Manage your parking spaces
           </Text>
@@ -168,11 +168,11 @@ export default function OwnerHome() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.navItem}
-          onPress={() => router.push("/owner/bookings")}
+            style={styles.navItem}
+            onPress={() => router.push("/owner/bookings")}
         >
-          <Text style={styles.navIcon}>▣</Text>
-          <Text style={styles.navText}>Bookings</Text>
+        <Text style={styles.navIcon}>▣</Text>
+        <Text style={styles.navText}>Bookings</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
