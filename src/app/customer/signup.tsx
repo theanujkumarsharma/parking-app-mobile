@@ -1,5 +1,8 @@
+import customerSignUp from "@/lib/customerSignupAuth";
 import { router } from "expo-router";
+import { useState } from "react";
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
@@ -12,6 +15,60 @@ import {
 } from "react-native";
 
 export default function CustomerSignup() {
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const handleSignup = async () => {
+    if (
+      !fullName.trim() ||
+      !email.trim() ||
+      !phone.trim() ||
+      !password ||
+      !confirmPassword
+    ) {
+      Alert.alert("Missing Information", "Please fill in all fields.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      Alert.alert("Password Error", "Passwords do not match.");
+      return;
+    }
+
+    try {
+      const result = await customerSignUp({
+        fullName: fullName.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        password,
+        confirmPassword,
+      });
+      if (!result.success) {
+        Alert.alert("Registration Failed", result.message);
+        return;
+      }
+
+      Alert.alert(
+        "Registration Successful",
+        "Your customer account has been created.",
+        [
+          {
+            text: "Continue",
+            onPress: () => router.replace("/customer/login"),
+          },
+        ],
+      );
+    } catch (error) {
+      console.error("Unexpected signup error:", error);
+      Alert.alert(
+        "Registration Error",
+        "Something went wrong. Please try again.",
+      );
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -22,7 +79,6 @@ export default function CustomerSignup() {
           contentContainerStyle={styles.content}
           keyboardShouldPersistTaps="handled"
         >
-
           <TouchableOpacity
             onPress={() => router.back()}
             style={styles.backButton}
@@ -36,15 +92,15 @@ export default function CustomerSignup() {
 
           <Text style={styles.title}>Create Account</Text>
 
-          <Text style={styles.subtitle}>
-            Sign up as a customer
-          </Text>
+          <Text style={styles.subtitle}>Sign up as a customer</Text>
 
           <Text style={styles.label}>Full Name</Text>
           <TextInput
             style={styles.input}
             placeholder="Enter your full name"
             placeholderTextColor="#9CA3AF"
+            value={fullName}
+            onChangeText={setFullName}
           />
 
           <Text style={styles.label}>Email</Text>
@@ -54,6 +110,8 @@ export default function CustomerSignup() {
             placeholderTextColor="#9CA3AF"
             keyboardType="email-address"
             autoCapitalize="none"
+            value={email}
+            onChangeText={setEmail}
           />
 
           <Text style={styles.label}>Phone Number</Text>
@@ -62,6 +120,8 @@ export default function CustomerSignup() {
             placeholder="Enter your phone number"
             placeholderTextColor="#9CA3AF"
             keyboardType="phone-pad"
+            value={phone}
+            onChangeText={setPhone}
           />
 
           <Text style={styles.label}>Password</Text>
@@ -70,6 +130,8 @@ export default function CustomerSignup() {
             placeholder="Create a password"
             placeholderTextColor="#9CA3AF"
             secureTextEntry
+            value={password}
+            onChangeText={setPassword}
           />
 
           <Text style={styles.label}>Confirm Password</Text>
@@ -78,24 +140,21 @@ export default function CustomerSignup() {
             placeholder="Confirm your password"
             placeholderTextColor="#9CA3AF"
             secureTextEntry
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
           />
 
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity style={styles.button} onPress={handleSignup}>
             <Text style={styles.buttonText}>Create Account</Text>
           </TouchableOpacity>
 
           <View style={styles.loginRow}>
-            <Text style={styles.loginText}>
-              Already have an account?
-            </Text>
+            <Text style={styles.loginText}>Already have an account?</Text>
 
-            <TouchableOpacity
-              onPress={() => router.push("/customer/login")}
-            >
+            <TouchableOpacity onPress={() => router.push("/customer/login")}>
               <Text style={styles.loginLink}> Login</Text>
             </TouchableOpacity>
           </View>
-
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
