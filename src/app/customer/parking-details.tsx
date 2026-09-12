@@ -62,18 +62,18 @@ export default function ParkingDetails() {
   const [selectedTime, setSelectedTime] =
     useState("10:00 AM");
 
-  const handleContinue = () => {
-    router.push({
-      pathname: "/customer/select-slot",
-      params: {
-        id: params.id || "1",
-        name: parkingName,
-        price: price.toString(),
-        date: selectedDate,
-        time: selectedTime,
-      },
-    });
-  };
+  // const handleContinue = () => {
+  //   router.push({
+  //     pathname: "/customer/select-parking-slot",
+  //     params: {
+  //       id: params.id || "1",
+  //       name: parkingName,
+  //       price: price.toString(),
+  //       date: selectedDate,
+  //       time: selectedTime,
+  //     },
+  //   });
+  // };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -391,7 +391,7 @@ export default function ParkingDetails() {
 
         <TouchableOpacity
           style={styles.continueButton}
-          onPress={handleContinue}
+          // onPress={handleContinue}
         >
           <View>
             <Text style={styles.continuePrice}>

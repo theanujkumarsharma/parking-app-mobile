@@ -1,5 +1,6 @@
 import { router } from "expo-router";
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
@@ -9,8 +10,37 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import {useState} from "react";
+import ownerLogin from "@/lib/ownerLogin";
 
 export default function OwnerLogin() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async () => {
+    if (!email.trim() || !password.trim()) { 
+      Alert.alert("Missing Information", "Please enter email and password."); 
+      return;
+  }
+
+  try{
+    const result = await ownerLogin({
+      email: email.trim(), 
+      password});
+
+      if(!result.success){
+        Alert.alert("Login Failed", result.message);
+        return;
+      }
+      router.replace("/owner/home");
+  }catch(error){
+    console.error("Login error:", error);
+    Alert.alert("Login Error", "An error occurred during login. Please try again.");
+  }
+};
+
+
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -18,7 +48,6 @@ export default function OwnerLogin() {
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <View style={styles.content}>
-
           <TouchableOpacity
             onPress={() => router.back()}
             style={styles.backButton}
@@ -32,17 +61,17 @@ export default function OwnerLogin() {
 
           <Text style={styles.title}>Parking Owner Login</Text>
 
-          <Text style={styles.subtitle}>
-            Login to manage your parking
-          </Text>
+          <Text style={styles.subtitle}>Login to manage your parking</Text>
 
-          <Text style={styles.label}>Email or Phone</Text>
+          <Text style={styles.label}>Email</Text>
 
           <TextInput
             style={styles.input}
-            placeholder="Enter your email or phone"
+            placeholder="Enter your email"
             placeholderTextColor="#9CA3AF"
             autoCapitalize="none"
+            value={email}
+            onChangeText={setEmail}
           />
 
           <Text style={styles.label}>Password</Text>
@@ -52,29 +81,24 @@ export default function OwnerLogin() {
             placeholder="Enter your password"
             placeholderTextColor="#9CA3AF"
             secureTextEntry
+            value={password}
+            onChangeText={setPassword}
           />
 
           <TouchableOpacity
             style={styles.button}
-            onPress={() => router.replace("/owner/home")}
+            onPress={handleLogin}
           >
-          <Text style={styles.buttonText}>Login</Text>
+            <Text style={styles.buttonText}>Login</Text>
           </TouchableOpacity>
 
           <View style={styles.signupRow}>
-            <Text style={styles.signupText}>
-              Don't have an account?
-            </Text>
+            <Text style={styles.signupText}>Don't have an account?</Text>
 
-            <TouchableOpacity
-              onPress={() => router.push("/owner/signup")}
-            >
-              <Text style={styles.signupLink}>
-                {" "}Register Parking
-              </Text>
+            <TouchableOpacity onPress={() => router.push("/owner/signup")}>
+              <Text style={styles.signupLink}> Register Parking</Text>
             </TouchableOpacity>
           </View>
-
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>

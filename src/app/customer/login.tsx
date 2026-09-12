@@ -1,5 +1,8 @@
+import customerLogin from "@/lib/customerLogin";
 import { router } from "expo-router";
+import { useState } from "react";
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
@@ -11,6 +14,41 @@ import {
 } from "react-native";
 
 export default function CustomerLogin() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async () => {
+    if (!email.trim() || !password) {
+      Alert.alert(
+        "Missing Information",
+        "Please enter your email and password.",
+      );
+      return;
+    }
+
+    try {
+      const result = await customerLogin({
+        email: email.trim(),
+        password,
+      });
+      if (!result.success) {
+        Alert.alert("Login Failed", result.message);
+        return;
+      }
+
+      // Login successful
+      Alert.alert("Success", "Login successful!", [
+        {
+          text: "OK",
+          onPress: () => router.replace("/customer/home"),
+        },
+      ]);
+    } catch (error) {
+      console.error("Unexpected login error:", error);
+      Alert.alert("Login Error", "Something went wrong. Please try again.");
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -18,7 +56,6 @@ export default function CustomerLogin() {
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <View style={styles.content}>
-
           <TouchableOpacity
             onPress={() => router.back()}
             style={styles.backButton}
@@ -32,20 +69,19 @@ export default function CustomerLogin() {
 
           <Text style={styles.title}>Customer Login</Text>
 
-          <Text style={styles.subtitle}>
-            Login to find and book parking
-          </Text>
+          <Text style={styles.subtitle}>Login to find and book parking</Text>
 
           <View style={styles.form}>
-
-            <Text style={styles.label}>Email or Phone</Text>
+            <Text style={styles.label}>Email</Text>
 
             <TextInput
               style={styles.input}
-              placeholder="Enter your email or phone"
+              placeholder="Enter your email"
               placeholderTextColor="#9CA3AF"
               keyboardType="email-address"
               autoCapitalize="none"
+              value={email}
+              onChangeText={setEmail}
             />
 
             <Text style={styles.label}>Password</Text>
@@ -55,29 +91,22 @@ export default function CustomerLogin() {
               placeholder="Enter your password"
               placeholderTextColor="#9CA3AF"
               secureTextEntry
+              value={password}
+              onChangeText={setPassword}
             />
 
-            <TouchableOpacity
-              style={styles.loginButton}
-              onPress={() => router.push("/customer/home")}
-              >
+            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
               <Text style={styles.loginButtonText}>Login</Text>
             </TouchableOpacity>
-
           </View>
 
           <View style={styles.signupRow}>
-            <Text style={styles.signupText}>
-              Don't have an account?
-            </Text>
+            <Text style={styles.signupText}>Don't have an account?</Text>
 
-            <TouchableOpacity
-              onPress={() => router.push("/customer/signup")}
-            >
+            <TouchableOpacity onPress={() => router.push("/customer/signup")}>
               <Text style={styles.signupLink}> Sign Up</Text>
             </TouchableOpacity>
           </View>
-
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>

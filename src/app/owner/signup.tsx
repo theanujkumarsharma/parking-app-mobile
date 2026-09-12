@@ -1,5 +1,8 @@
+import ownerSignUp from "@/lib/ownerSignUpAuth";
 import { router } from "expo-router";
+import { useState } from "react";
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   SafeAreaView,
@@ -11,6 +14,66 @@ import {
 } from "react-native";
 
 export default function OwnerSignup() {
+  const [ownerName, setOwnerName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [parkingName, setParkingName] = useState("");
+  const [parkingAddress, setParkingAddress] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const handleSignup = async () => {
+    if (
+      !ownerName.trim() ||
+      !email.trim() ||
+      !phone.trim() ||
+      !parkingName.trim() ||
+      !parkingAddress.trim() ||
+      !password ||
+      !confirmPassword
+    ) {
+      Alert.alert("Missing Information", "Please fill in all fields.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      Alert.alert("Password Error", "Passwords do not match.");
+      return;
+    }
+
+    try {
+      const result = await ownerSignUp({
+        ownerName: ownerName.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        parkingName: parkingName.trim(),
+        parkingAddress: parkingAddress.trim(),
+        password,
+        confirmPassword,
+      });
+
+      if (!result.success) {
+        Alert.alert("Registration Failed", result.message);
+        return;
+      }
+      Alert.alert(
+        "Registration Successful",
+        "Your parking owner account has been created.",
+        [
+          {
+            text: "Continue",
+            onPress: () => router.replace("/owner/login"),
+          },
+        ],
+      );
+    } catch (error) {
+      console.error("Unexpected signup error:", error);
+      Alert.alert(
+        "Registration Error",
+        "Something went wrong. Please try again.",
+      );
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -21,7 +84,6 @@ export default function OwnerSignup() {
           contentContainerStyle={styles.content}
           keyboardShouldPersistTaps="handled"
         >
-
           <TouchableOpacity
             onPress={() => router.back()}
             style={styles.backButton}
@@ -33,15 +95,15 @@ export default function OwnerSignup() {
 
           <Text style={styles.title}>Register Parking</Text>
 
-          <Text style={styles.subtitle}>
-            Create your parking owner account
-          </Text>
+          <Text style={styles.subtitle}>Create your parking owner account</Text>
 
           <Text style={styles.label}>Owner Name</Text>
           <TextInput
             style={styles.input}
             placeholder="Enter your full name"
             placeholderTextColor="#9CA3AF"
+            value={ownerName}
+            onChangeText={setOwnerName}
           />
 
           <Text style={styles.label}>Email</Text>
@@ -51,6 +113,8 @@ export default function OwnerSignup() {
             placeholderTextColor="#9CA3AF"
             keyboardType="email-address"
             autoCapitalize="none"
+            value={email}
+            onChangeText={setEmail}
           />
 
           <Text style={styles.label}>Phone Number</Text>
@@ -59,6 +123,8 @@ export default function OwnerSignup() {
             placeholder="Enter your phone number"
             placeholderTextColor="#9CA3AF"
             keyboardType="phone-pad"
+            value={phone}
+            onChangeText={setPhone}
           />
 
           <Text style={styles.label}>Parking Name</Text>
@@ -66,6 +132,8 @@ export default function OwnerSignup() {
             style={styles.input}
             placeholder="Enter your parking name"
             placeholderTextColor="#9CA3AF"
+            value={parkingName}
+            onChangeText={setParkingName}
           />
 
           <Text style={styles.label}>Parking Address</Text>
@@ -74,6 +142,8 @@ export default function OwnerSignup() {
             placeholder="Enter parking address"
             placeholderTextColor="#9CA3AF"
             multiline
+            value={parkingAddress}
+            onChangeText={setParkingAddress}
           />
 
           <Text style={styles.label}>Password</Text>
@@ -82,6 +152,8 @@ export default function OwnerSignup() {
             placeholder="Create a password"
             placeholderTextColor="#9CA3AF"
             secureTextEntry
+            value={password}
+            onChangeText={setPassword}
           />
 
           <Text style={styles.label}>Confirm Password</Text>
@@ -90,12 +162,12 @@ export default function OwnerSignup() {
             placeholder="Confirm your password"
             placeholderTextColor="#9CA3AF"
             secureTextEntry
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
           />
 
-          <TouchableOpacity style={styles.button}>
-            <Text style={styles.buttonText}>
-              Register Parking
-            </Text>
+          <TouchableOpacity style={styles.button} onPress={handleSignup}>
+            <Text style={styles.buttonText}>Register Parking</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -107,7 +179,6 @@ export default function OwnerSignup() {
               <Text style={styles.loginLink}>Login</Text>
             </Text>
           </TouchableOpacity>
-
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
